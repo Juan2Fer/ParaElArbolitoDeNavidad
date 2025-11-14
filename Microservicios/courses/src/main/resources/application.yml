@@ -1,0 +1,20 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: courses-service # Nombre del servicio para Eureka
+  datasource:
+    url: jdbc:postgresql://localhost:5432/coursesdb
+    username:  postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka # URL del Eureka Server
