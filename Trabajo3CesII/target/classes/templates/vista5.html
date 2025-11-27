@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Reparaciones - Taller Mecánico</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #f39c12;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #fef9e7;
+        }
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .pagination a {
+            color: #f39c12;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            margin: 0 4px;
+            border-radius: 4px;
+        }
+        .pagination a.active {
+            background-color: #f39c12;
+            color: white;
+            border: 1px solid #f39c12;
+        }
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+        .nav-menu {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            background: #e74c3c;
+            border-radius: 5px;
+        }
+        .nav-menu a:hover {
+            background: #c0392b;
+        }
+        .resultado {
+            color: #27ae60;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            background: #d5f4e6;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #f39c12;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+<div class="nav-menu">
+    <a href="/">🏠 Inicio</a>
+    <a href="/vehiculos">🚗 Ver Vehículos</a>
+    <a href="/mecanico/peticion1">🔧 Mecánicos</a>
+</div>
+
+<div class="container">
+    <h1>🔨 LISTADO DE REPARACIONES DEL VEHÍCULO</h1>
+
+    <div class="resultado" th:if="${reparaciones == null or reparaciones.isEmpty()}">
+        ⚠️ No hay reparaciones registradas para el vehículo ID: <span th:text="${vehiculoId}"></span>
+    </div>
+
+    <table th:if="${reparaciones != null and !reparaciones.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>DESCRIPCIÓN</th>
+            <th>COSTO ($)</th>
+            <th>TIEMPO (HORAS)</th>
+            <th>FECHA INICIO</th>
+            <th>Vehículo ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="reparacion : ${reparaciones}">
+            <td th:text="${reparacion.id}"></td>
+            <td th:text="${reparacion.descripcionReparacion}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(reparacion.costo, 1, 2)}"></td>
+            <td th:text="${reparacion.tiempoEstimado}"></td>
+            <td th:text="${reparacion.fechaInicio}"></td>
+            <td th:text="${reparacion.vehiculoId}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" th:if="${totalPages > 1}">
+            <span th:if="${currentPage > 1}">
+                <a th:href="@{/reparacion/verReparaciones(page=${currentPage - 1}, pageSize=${pageSize}, vehiculoId=${vehiculoId})}">« Anterior</a>
+            </span>
+        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <a th:href="@{/reparacion/verReparaciones(page=${i}, pageSize=${pageSize}, vehiculoId=${vehiculoId})}"
+                   th:text="${i}"
+                   th:classappend="${i == currentPage} ? 'active'"></a>
+            </span>
+        <span th:if="${currentPage < totalPages}">
+                <a th:href="@{/reparacion/verReparaciones(page=${currentPage + 1}, pageSize=${pageSize}, vehiculoId=${vehiculoId})}">Siguiente »</a>
+            </span>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <form action="/reparacion/ingresar" method="get">
+            <input type="hidden" name="id" th:value="${vehiculoId}" />
+            <button type="submit">↩️ Volver al Panel de Reparaciones</button>
+        </form>
+
+        <form action="/peticion1" method="get" style="display: inline;">
+            <button type="submit" style="background-color: #7f8c8d;">🏠 Volver al Inicio</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
