@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Vehículos - Taller Mecánico</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #e9f7fe;
+        }
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .pagination a {
+            color: #e74c3c;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            margin: 0 4px;
+            border-radius: 4px;
+        }
+        .pagination a.active {
+            background-color: #e74c3c;
+            color: white;
+            border: 1px solid #e74c3c;
+        }
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+        .nav-menu {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            background: #e74c3c;
+            border-radius: 5px;
+        }
+        .nav-menu a:hover {
+            background: #c0392b;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+<div class="nav-menu">
+    <a href="/">🏠 Inicio</a>
+    <a href="/vehiculos">🚗 Ver Vehículos</a>
+    <a href="/mecanico/peticion1">🔧 Mecánicos</a>
+</div>
+
+<div class="container">
+    <h1>🚗 LISTADO DE VEHÍCULOS EN EL TALLER</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>PLACA</th>
+            <th>MARCA</th>
+            <th>MODELO</th>
+            <th>ESTADO</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="vehiculo : ${vehiculos}">
+            <td th:text="${vehiculo.id}"></td>
+            <td th:text="${vehiculo.placa}"></td>
+            <td th:text="${vehiculo.marca}"></td>
+            <td th:text="${vehiculo.modelo}"></td>
+            <td th:text="${vehiculo.estadoVehiculo}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+            <span th:if="${currentPage > 1}">
+                <a th:href="@{/vehiculos(page=${currentPage - 1}, pageSize=${pageSize})}">« Anterior</a>
+            </span>
+        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <a th:href="@{/vehiculos(page=${i}, pageSize=${pageSize})}"
+                   th:text="${i}"
+                   th:classappend="${i == currentPage} ? 'active'"></a>
+            </span>
+        <span th:if="${currentPage < totalPages}">
+                <a th:href="@{/vehiculos(page=${currentPage + 1}, pageSize=${pageSize})}">Siguiente »</a>
+            </span>
+    </div>
+
+    <div class="action-buttons">
+        <form action="/peticion1" method="get">
+            <button type="submit">⬅️ Volver al Panel Principal</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
